@@ -24,42 +24,54 @@ public:
 	~Set();
 	void test();
 
+
 private: 
 	typedef bool color_type;
-	static const color_type red = true; // why static 
-	static const color_type black = false;
+	static const color_type RED = true; // why static 
+	static const color_type BLACK = false;
 	struct node;
 	typedef node* n_ptr;
-	
 	size_type siz;
 	n_ptr root; 
 	
-	void delTree(n_ptr &root);
+	void debugTree(n_ptr x);
+	void delTree(n_ptr &root); 
+	inline n_ptr newNode(const key_type &node_key) const;
+
+	void colorFlip(node &x);
+	n_ptr r2Left(node &x); // x.right!=null rotate x.right up
+	n_ptr r2Right(node &x); // x.left!=null rotate x.left up 
+	void ins(n_ptr &x,const key_type& key);
 	struct node{
-		n_ptr parent, left, right;
+		n_ptr left, right;
 		color_type color; 
 		key_type key;
-		int cnt;
 		node(){
-			parent = left = right = NULL;
-			color = black;
+			left = right = nullptr;
+			color = RED;
 			key = (key_type)-1ll;
-			cnt = 0;
 		}
+		node(const key_type &node_key){
+			left = right = nullptr;
+			color = RED;
+			key = node_key;
+		}
+
 		void debug(){
 			using std::cout;
 			using std::endl;
-			cout<<"node "<<key<<endl;
-			cout<<"parent "<<parent -> key<<endl;
-			cout<<"left   "<<left -> key<<endl;
-			cout<<"right  "<<right -> key<<endl;
+			cout<<"=============node "<<key<<endl;
+			cout<<"left   ";
+			if(left != nullptr) cout<<left -> key<<endl;
+				else cout<<"null"<<endl;
+			cout<<"right  ";
+			if(right != nullptr) cout<<right -> key<<endl;
+				else cout<<"null"<<endl;
 			if(color) cout<<"red"<<endl;
 			else cout<<"black"<<endl;
-			cout<<cnt<<endl;
 			cout<<"==========================="<<endl;
 		}
 	};
-	n_ptr newNode();
 }; // TODO
 
 #endif
