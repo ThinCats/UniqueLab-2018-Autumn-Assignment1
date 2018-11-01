@@ -26,9 +26,9 @@ public:
 
 
 private: 
-	typedef bool color_type;
-	static const color_type RED = true; // why static 
-	static const color_type BLACK = false;
+	typedef short color_type;
+	static const color_type RED = 1; // why static 
+	static const color_type BLACK = 0;
 	struct node;
 	typedef node* n_ptr;
 	size_type siz;
@@ -38,10 +38,21 @@ private:
 	void delTree(n_ptr &root); 
 	inline n_ptr newNode(const key_type &node_key) const;
 
+	size_type find(const node &x,const key_type& key) const; // return 0 not find 1 find
+ 	int findMin(const node &x) const; // return key
+	int findMax(const node &x) const; // return key
+
 	void colorFlip(node &x);
-	n_ptr r2Left(node &x); // x.right!=null rotate x.right up
-	n_ptr r2Right(node &x); // x.left!=null rotate x.left up 
+	n_ptr r2L(node &x); // x.right!=null rotate x to left son
+	n_ptr r2R(node &x); // x.left!=null rotate x to right son 
+	n_ptr fixUp(node &x);
+	n_ptr d2R(node &x); // pushdown the RED edge to right son 
+	n_ptr d2L(node &x); // pushdown the RED edge to left son 
+
 	void ins(n_ptr &x,const key_type& key);
+	void del(n_ptr &x,const key_type& key);
+	void delMin(n_ptr &x,const key_type& key);
+
 	struct node{
 		n_ptr left, right;
 		color_type color; 
