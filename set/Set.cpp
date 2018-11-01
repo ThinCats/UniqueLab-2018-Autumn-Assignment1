@@ -29,7 +29,7 @@ void Set::insert(const key_type& key){
 
 Set::size_type Set::erase(const key_type& key){
 	size_type res = find(*root,key);
-// TODO delete()
+	if(res) del(root,key);
 	return res;
 }
 
@@ -124,16 +124,13 @@ void Set::d2L(n_ptr &px){ // pushdown the RED edge to left son
 		colorFlip(*px);
 	}
 }
-//TODO 
 void Set::fixUp(n_ptr &px){
 	if(isRed(px->left) && isRed(px->right)) colorFlip(*px);
 	if(isRed(px->left) && isRed(px->left->left)) {
 		r2R(px);
 		colorFlip(*px);
 	}
-	if( isRed(px->right)) {
-		r2L(px);
-	}
+	if(isRed(px->right)) r2L(px);
 }
 
 void Set::ins(n_ptr &px,const key_type& key){
@@ -153,6 +150,40 @@ void Set::ins(n_ptr &px,const key_type& key){
 		ins(px->right, key);
 		if(isRed(px->right)) r2L(px);
 	}	
+}
+
+void Set::del(n_ptr &px,const key_type& key){
+	SHOU_DONG_YI_CHANG(px == nullptr,"del px == nullptr");
+	bool is_less = Compare()(key, px->key);
+	bool is_greater = Compare()(px->key,key);
+	if(is_less){
+		if(!isRed(px->left)&&!isRed(px->left->left)) d2L(px);
+		del(px,key);
+	} else {
+		if(isRed(px->left)) r2R(px);
+		if(!is_greater && px->right == nullptr ) { // find at bottom
+			delTree(px); 
+			return ;
+		}
+		if(!isRed(px->right)&&!isRed(px->right->left)) d2R(px);
+		if(!is_greater){ // find
+			px->key = findMin(*(px->right));
+			delMin(px->right);
+			return ;
+		} else del(px->right,key);
+
+	}
+}
+
+void Set::delMin(n_ptr &px){
+	SHOU_DONG_YI_CHANG(px == nullptr,"delMin px == nullptr");
+	if(px->left==nullptr) {
+		delTree(px);
+		return ;
+	}
+	if(!isRed(px->left) && !isRed(px->left->left) ) d2L(px); 
+	delMin(px);
+	fixUp(px);
 }
 
 void Set::debugTree(n_ptr x){

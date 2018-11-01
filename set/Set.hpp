@@ -47,16 +47,16 @@ private:
  	int findMin(const node &x) const; // return key
 	int findMax(const node &x) const; // return key
 
-	void colorFlip(node &x);
-	void r2L(n_ptr &x); // x.right!=null rotate x to left son
-	void r2R(n_ptr &x); // x.left!=null rotate x to right son 
-	void fixUp(n_ptr &x);
-	void d2R(n_ptr &x); // pushdown the RED edge to right son 
-	void d2L(n_ptr &x); // pushdown the RED edge to left son 
+	void colorFlip(node &px);
+	void r2L(n_ptr &px); // x.right!=null rotate x to left son
+	void r2R(n_ptr &px); // x.left!=null rotate x to right son 
+	void fixUp(n_ptr &px);
+	void d2R(n_ptr &px); // pushdown the RED edge to right son 
+	void d2L(n_ptr &px); // pushdown the RED edge to left son 
 
-	void ins(n_ptr &x,const key_type& key);
-	void del(n_ptr &x,const key_type& key);
-	void delMin(n_ptr &x,const key_type& key);
+	void ins(n_ptr &px,const key_type& key);
+	void del(n_ptr &px,const key_type& key);
+	void delMin(n_ptr &px);
 
 	struct node{
 		n_ptr left, right;
