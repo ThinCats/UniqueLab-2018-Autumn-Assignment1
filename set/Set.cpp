@@ -6,6 +6,10 @@ inline void SHOU_DONG_YI_CHANG(bool x,std::string s){
 	if(x) std::cout<<s<<"####################################################\n##################################################################################################################################################\n";
 }
 
+inline bool Set::isRed(const n_ptr &px) const{
+	return (px != nullptr && px->color == RED);
+}
+
 bool Set::empty() const {
 	return (root == nullptr);
 }
@@ -42,12 +46,12 @@ Set::~Set(){
 	delTree(root);
 }
 
-void Set::delTree(n_ptr &x){
-	if(x == nullptr) return ;
-	delTree(x -> left);
-	delTree(x -> right);
-	delete(x);
-	x = nullptr;
+void Set::delTree(n_ptr &px){
+	if(px == nullptr) return ;
+	delTree(px -> left);
+	delTree(px -> right);
+	delete(px);
+	px = nullptr;
 }
 
 inline Set::n_ptr Set::newNode(const key_type &node_key)const{
@@ -82,82 +86,72 @@ inline void Set::colorFlip(node &x){
 	x.right->color ^= 1;
 }
 
-Set::n_ptr Set::r2L(node &x){ // x.right!=null rotate x to left son
-	SHOU_DONG_YI_CHANG(x.right == nullptr,"r2Left x.right == nullptr");
-	SHOU_DONG_YI_CHANG(x.left->color == BLACK,"r2Left x.left->color == BLACK");
-	node &y = *x.right;
-	x.right = y.left;
-	y.left = &x;
-	y.color = x.color;
-	x.color = RED;
-	return &y;
+void Set::r2L(n_ptr &px){ // x.right!=null rotate x to left son
+	SHOU_DONG_YI_CHANG(px->right == nullptr,"r2Left x.right == nullptr");
+	SHOU_DONG_YI_CHANG(px->left->color == BLACK,"r2Left x.left->color == BLACK");
+	n_ptr py = px->right;
+	px->right = py->left;
+	py->left = px;
+	py->color = px->color;
+	px->color = RED;
+	px = py;
+}
+ 
+void Set::r2R(n_ptr &px){ //x.left!=null rotate x to right son 
+	SHOU_DONG_YI_CHANG(px->left == nullptr,"r2Right x.left == nullptr");
+	SHOU_DONG_YI_CHANG(px->right->color == BLACK,"r2Right x.right->color == BLACK");
+	n_ptr py = px->left;
+	px->left = py->right; 
+	py->right = px;
+	py->color = px->color;
+	px->color = RED;
+	px = py;
 }
 
-Set::n_ptr Set::r2R(node &x){ //x.left!=null rotate x to right son 
-	SHOU_DONG_YI_CHANG(x.left == nullptr,"r2Right x.left == nullptr");
-	SHOU_DONG_YI_CHANG(x.right->color == BLACK,"r2Right x.right->color == BLACK");
-	node &y = *x.left;
-	x.left = y.right; 
-	y.right = &x;
-	y.color = x.color;
-	x.color = RED;
-	return &y;
-}
-Set::n_ptr Set::d2R(node &x){ // pushdown the RED edge to right son 
-	n_ptr xp = &x;
-	colorFlip(x);
-	if(x.left != nullptr && x.left->left != nullptr && 
-		x.left->left->color == RED) {
-		xp = r2R(x);
-		colorFlip(*xp);
+
+void Set::d2R(n_ptr &px){ // pushdown the RED edge to right son 
+	colorFlip(*px);
+	if(px->left != nullptr && isRed(px->left->left)) {
+		r2R(px);
+		colorFlip(*px);
 	}
-	return xp;
 }
-Set::n_ptr Set::d2L(node &x){ // pushdown the RED edge to left son 
-	n_ptr xp = &x;
-	colorFlip(x);
-	if(x.right != nullptr && x.right->left != nullptr && 
-		x.right->left->color == RED) {
-		x.right = r2R(*x.right);
-		xp = r2L(x);
-		colorFlip(*xp);
+void Set::d2L(n_ptr &px){ // pushdown the RED edge to left son 
+	colorFlip(*px);
+	if(px->right != nullptr && isRed(px->right->left)) {
+		r2R(px->right);
+		r2L(px);
+		colorFlip(*px);
 	}
-	return xp;
 }
 //TODO 
-Set::n_ptr Set::fixUp(node &x){
-	n_ptr xp = &x;
-	if( x.left != nullptr && x.left->color == RED &&
-		x.right != nullptr && x.right->color == RED) colorFlip(x);
-	if( x.left != nullptr && x.left->color == RED &&
-		x.left->left != nullptr && x.left->left->color == RED ) {
-		xp = r2R(x);
-		colorFlip(*xp);
+void Set::fixUp(n_ptr &px){
+	if(isRed(px->left) && isRed(px->right)) colorFlip(*px);
+	if(isRed(px->left) && isRed(px->left->left)) {
+		r2R(px);
+		colorFlip(*px);
 	}
-	if( )
-
+	if( isRed(px->right)) {
+		r2L(px);
+	}
 }
 
-void Set::ins(n_ptr &xp,const key_type& key){
+void Set::ins(n_ptr &px,const key_type& key){
 
-	if(xp == nullptr) {
-		xp = newNode(key);	
+	if(px == nullptr) {
+		px = newNode(key);	
 		return ;
 	}
-	node &x = *xp;
-	bool is_less = Compare()(key, x.key);
-	bool is_greater = Compare()(x.key,key);
+	bool is_less = Compare()(key, px->key);
+	bool is_greater = Compare()(px->key,key);
 	if(!is_less&&!is_greater) return ;
-	if(x.left != nullptr && x.left->color == RED &&
-		x.right != nullptr && x.right->color == RED) colorFlip(x);
+	if(isRed(px->left) && isRed(px->right)) colorFlip(*px);
 	if(is_less) {
-		ins(x.left, key);
-		if(	x.left->color == RED &&
-			x.left->left != nullptr && 
-			x.left->left->color == RED ) xp = r2R(x);
+		ins(px->left, key);
+		if(isRed(px->left) && isRed(px->left->left)) r2R(px);
 	} else {
-		ins(x.right, key);
-		if( x.right->color == RED) xp = r2L(x);
+		ins(px->right, key);
+		if(isRed(px->right)) r2L(px);
 	}	
 }
 
