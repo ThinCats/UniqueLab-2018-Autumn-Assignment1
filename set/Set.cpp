@@ -24,17 +24,19 @@ void Set::clear(){
 }
 
 void Set::insert(const key_type& key){
-	ins(root,key); return ;
+	int x = find(root,key);
+	if(!x) ins(root,key), siz++; 
+	return ;
 }
 
 Set::size_type Set::erase(const key_type& key){
-	size_type res = find(*root,key);
-	if(res) del(root,key);
+	size_type res = find(root,key);
+	if(res) del(root,key),siz--;
 	return res;
 }
 
 Set::size_type Set::count(const key_type& key){
-	return find(*root,key);
+	return find(root,key);
 }
 
 Set::Set(){
@@ -57,17 +59,15 @@ void Set::delTree(n_ptr &px){
 inline Set::n_ptr Set::newNode(const key_type &node_key)const{
 	return new node(node_key);
 }
-Set::size_type Set::find(const node &x,const key_type& key) const{ // return 0 not find 1 find
-	bool is_less = Compare()(key, x.key);
-	bool is_greater = Compare()(x.key, key);
+Set::size_type Set::find(const n_ptr &px,const key_type& key) const{ // return 0 not find 1 find
+	if(px == nullptr) return 0;
+
+	bool is_less = Compare()(key, px->key);
+	bool is_greater = Compare()(px->key, key);
 	if(!is_less&&!is_greater) return 1;	
-	if(is_less) {
-		if(x.left == nullptr) return 0;
-		else return find(*x.left, key);
-	} else {
-		if(x.right == nullptr) return 0;
-		else return find(*x.right, key);
-	}
+	if(is_less) return find(px->left, key);
+		else return find(px->right, key);
+	
 }
 int Set::findMin(const node &x) const { // return key
 	if(x.left == nullptr) return x.key;
@@ -77,7 +77,7 @@ int Set::findMax(const node &x) const { // return key
 	if(x.right == nullptr) return x.key;
 	return findMax(*x.right);
 }
-
+	
 inline void Set::colorFlip(node &x){
 	SHOU_DONG_YI_CHANG(x.left == nullptr,"colorFlip x.left == nullptr");
 	SHOU_DONG_YI_CHANG(x.right == nullptr,"colorFlip x.right == nullptr");
@@ -196,17 +196,38 @@ void Set::debugTree(n_ptr x){
 	debugTree(x->right);
 }
 void Set::test(){
+	using std::cin;
 	using std::cout;
 	using std::endl;
-	const int t[10]={2,5,1,3,4,9,6,8,7,0};
+	int a[100], tot=0;
+	freopen("testdata","r",stdin);
 	freopen("testresult","w",stdout);
 	debugTree(root);
-	for(int i=0;i<10;i++) {
-		cout<<"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwinsert "<<t[i]<<"wwwwwwwwwwwwwwwww"<<endl;
-		insert((key_type)t[i]);
-		cout<<"insert over"<<endl;
+	cout<<"??"<<endl;
+	int n; cin>>n; cout<<n<<endl;
+
+	for(int i=1;i<=n;i++){
+		int x,y; cin>>y>>x; 
+		a[++tot]=x;	
+		if(y){
+			cout<<"**********insert "<<x<<"*************\n";
+			insert(x);
+			cout<<"**********insert over**************\n";
+		} else {
+			cout<<"**********erase "<<x<<"*************\n";
+			erase(x);
+			cout<<"**********erase over**************\n";
+		}
+		cout<<"now siz = "<<size()<<endl;
 		debugTree(root);
-	}
+		for(int j=1;j<=tot;j++) {
+			cout<<"count "<<a[j]<<" result is"<<count(a[j])<<endl;
+		}
+	}	
+	cout<<"*************over clear"<<endl;
+	clear();
+	cout<<"empty result is "<<empty()<<endl;
+	debugTree(root);
 }
 void ttest(){
 	Set a; a.test();

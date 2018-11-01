@@ -43,7 +43,7 @@ private:
 	void delTree(n_ptr &root); 
 	
 
-	size_type find(const node &x,const key_type& key) const; // return 0 not find 1 find
+	size_type find(const n_ptr &px,const key_type& key) const; // return 0 not find 1 find
  	int findMin(const node &x) const; // return key
 	int findMax(const node &x) const; // return key
 
