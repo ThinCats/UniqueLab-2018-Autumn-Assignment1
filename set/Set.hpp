@@ -39,13 +39,13 @@ private:
 	size_type siz;
 	
 
-	void debugTree(n_ptr x);
-	void delTree(n_ptr &root); 
+	void debugTree(n_ptr px);
+	void delTree(n_ptr &px); 
 	
 
 	size_type find(const n_ptr &px,const key_type& key) const; // return 0 not find 1 find
- 	int findMin(const node &x) const; // return key
-	int findMax(const node &x) const; // return key
+ 	key_type findMin(const node &x) const; // return key
+	key_type findMax(const node &x) const; // return key
 
 	void colorFlip(node &px);
 	void r2L(n_ptr &px); // x.right!=null rotate x to left son
