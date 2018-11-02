@@ -1,0 +1,57 @@
+======NODE NULL========
+??
+10
+**********insert 2*************
+**********insert over**************
+now siz = 1
+=============node 2
+left   null
+right  null
+red
+===========================
+======NODE NULL========
+======NODE NULL========
+count 2 result is1
+**********insert 1*************
+**********insert over**************
+now siz = 2
+=============node 2
+left   1
+right  null
+red
+===========================
+=============node 1
+left   null
+right  null
+red
+===========================
+======NODE NULL========
+======NODE NULL========
+======NODE NULL========
+count 2 result is1
+count 1 result is1
+**********insert 5*************
+**********insert over**************
+now siz = 3
+=============node 5
+left   2
+right  null
+red
+===========================
+=============node 2
+left   1
+right  null
+red
+===========================
+=============node 1
+left   null
+right  null
+red
+===========================
+======NODE NULL========
+======NODE NULL========
+======NODE NULL========
+======NODE NULL========
+count 2 result is1
+count 1 result is1
+count 5 result is1

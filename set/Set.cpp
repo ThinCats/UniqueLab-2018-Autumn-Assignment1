@@ -1,7 +1,5 @@
 #include "Set.hpp"
 
-#include <iostream>
-
 inline void SHOU_DONG_YI_CHANG(bool x,std::string s){
 	if(x) std::cout<<s<<"####################################################\n##################################################################################################################################################\n";
 }
@@ -88,7 +86,7 @@ inline void Set::colorFlip(node &x){
 
 void Set::r2L(n_ptr &px){ // x.right!=null rotate x to left son
 	SHOU_DONG_YI_CHANG(px->right == nullptr,"r2Left x.right == nullptr");
-	SHOU_DONG_YI_CHANG(px->left->color == BLACK,"r2Left x.left->color == BLACK");
+	SHOU_DONG_YI_CHANG(px->right->color == BLACK,"r2Left x.left->color == BLACK");
 	n_ptr py = px->right;
 	px->right = py->left;
 	py->left = px;
@@ -99,7 +97,7 @@ void Set::r2L(n_ptr &px){ // x.right!=null rotate x to left son
  
 void Set::r2R(n_ptr &px){ //x.left!=null rotate x to right son 
 	SHOU_DONG_YI_CHANG(px->left == nullptr,"r2Right x.left == nullptr");
-	SHOU_DONG_YI_CHANG(px->right->color == BLACK,"r2Right x.right->color == BLACK");
+	SHOU_DONG_YI_CHANG(px->left->color == BLACK,"r2Right x.right->color == BLACK");
 	n_ptr py = px->left;
 	px->left = py->right; 
 	py->right = px;
@@ -133,10 +131,9 @@ void Set::fixUp(n_ptr &px){
 	if(isRed(px->right)) r2L(px);
 }
 
-void Set::ins(n_ptr &px,const key_type& key){
-
+void Set::ins(n_ptr &px,const key_type& key){	
 	if(px == nullptr) {
-		px = newNode(key);	
+		px = newNode(key);
 		return ;
 	}
 	bool is_less = Compare()(key, px->key);
@@ -156,11 +153,15 @@ void Set::del(n_ptr &px,const key_type& key){
 	SHOU_DONG_YI_CHANG(px == nullptr,"del px == nullptr");
 	bool is_less = Compare()(key, px->key);
 	bool is_greater = Compare()(px->key,key);
-	if(is_less){
+	 if(is_less){
 		if(!isRed(px->left)&&!isRed(px->left->left)) d2L(px);
-		del(px,key);
+		del(px->left,key);
 	} else {
-		if(isRed(px->left)) r2R(px);
+		if(isRed(px->left)) {
+			r2R(px);
+			del(px->right,key);
+			return ;
+		} // node x not change && px should be new px
 		if(!is_greater && px->right == nullptr ) { // find at bottom
 			delTree(px); 
 			return ;
@@ -177,12 +178,13 @@ void Set::del(n_ptr &px,const key_type& key){
 
 void Set::delMin(n_ptr &px){
 	SHOU_DONG_YI_CHANG(px == nullptr,"delMin px == nullptr");
+	debugTree(root);
 	if(px->left==nullptr) {
 		delTree(px);
 		return ;
 	}
 	if(!isRed(px->left) && !isRed(px->left->left) ) d2L(px); 
-	delMin(px);
+	delMin(px->left);
 	fixUp(px);
 }
 
@@ -205,9 +207,9 @@ void Set::test(){
 	debugTree(root);
 	cout<<"??"<<endl;
 	int n; cin>>n; cout<<n<<endl;
-
 	for(int i=1;i<=n;i++){
 		int x,y; cin>>y>>x; 
+		cout<<"init "<<y<<" "<<x<<endl;
 		a[++tot]=x;	
 		if(y){
 			cout<<"**********insert "<<x<<"*************\n";
@@ -221,6 +223,7 @@ void Set::test(){
 		cout<<"now siz = "<<size()<<endl;
 		debugTree(root);
 		for(int j=1;j<=tot;j++) {
+			cout<<a[j]<<endl;
 			cout<<"count "<<a[j]<<" result is"<<count(a[j])<<endl;
 		}
 	}	
@@ -231,9 +234,8 @@ void Set::test(){
 }
 void ttest(){
 	Set a; a.test();
-
 }
-int main(){ // test
+/*int main(){ // test
 	ttest();std::cout<<"ttest over"<<std::endl;
 	return 0;
-}
+}*/
