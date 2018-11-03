@@ -53,7 +53,7 @@ private:
 	void fixUp(n_ptr &px);
 	void d2R(n_ptr &px); // pushdown the RED edge to right son 
 	void d2L(n_ptr &px); // pushdown the RED edge to left son 
-
+		
 	void ins(n_ptr &px,const key_type& key);
 	void del(n_ptr &px,const key_type& key);
 	void delMin(n_ptr &px);
@@ -72,7 +72,12 @@ private:
 			color = RED;
 			key = node_key;
 		}
-
+		bool ck(){
+			bool res=true;
+			if(left!=nullptr && Compare()(key, left->key)) res=false;
+			if(right!=nullptr && Compare()(right->key, key)) res=false; 
+			return res;
+		}
 		void debug(){
 			using std::cout;
 			using std::endl;

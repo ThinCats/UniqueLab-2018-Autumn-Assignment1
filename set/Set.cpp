@@ -135,8 +135,6 @@ void Set::ins(n_ptr &px,const key_type& key){
 	fixUp(px);
 	return ;
 }
-using std::cout;
-using std::endl;
 //TODO d2L/d2R change the px, px only describe the position(some node's son),
 //	after the change the cmp is changed
 // d2L might r2L 
