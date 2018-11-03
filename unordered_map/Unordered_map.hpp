@@ -9,30 +9,50 @@ typedef typename std::unordered_map<std::string, double> Unordered_map;
 #define _UNORDERD_MAP_HPP
 
 #include <string>
+#include <vector>
+
+#include "node.hpp"
 using Key = std::string;
+typedef unsigned long long ull;
 using T = double;
 
 class Unordered_map {
 
 public:
-  typedef Key             key_type;
-  typedef T               mapped_type;
-  typedef key_type&       reference;
-  typedef const key_type& const_reference;
-  typedef std::pair<const key_type, mapped_type> value_type;
-  typedef size_t          size_type;
+	typedef node<T>* 		n_ptr;
+	typedef Key             key_type;
+	typedef T               mapped_type;
+	typedef key_type&       reference;
+	typedef const key_type& const_reference;
+	typedef std::pair<const key_type, mapped_type> value_type;
+	typedef size_t          size_type;
 
 public:
-  bool empty() const;
-  size_type size() const;
-  void clear();
-  void insert(const value_type& value);
-  void erase(const key_type& key);
-  T& at(const Key& key);
-  size_type count(const Key& key);
-
+	bool empty() const;
+	size_type size() const;
+	void clear();
+	void insert(const value_type& value);
+	void erase(const key_type& key);
+	mapped_type& at(const Key& key);
+	size_type count(const Key& key);
+	Unordered_map();
+	~Unordered_map();
 private:
-  // TODO
+	
+	ull base,mod;
+	size_type siz;
+	std::vector< node<T>*  > table;
+	
+	n_ptr newnode(const mapped_type &V,const ull &H);
+	ull K2U(key_type s);
+	void add();
+	void release();
+	void init();
+	void expand();
+	void shrink();
+	void rebuild(ull nmod);
+	inline bool overWeight(){ return 0; return mod<=1e7&&siz*4>=3*base; } 
+	inline bool tooThin(){ return 0; return mod>=64&&siz*8<=base; }
 
 }; // TODO
 #endif
