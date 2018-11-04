@@ -12,6 +12,7 @@ typedef typename std::unordered_map<std::string, double> Unordered_map;
 #include <vector>
 
 #include "node.hpp"
+#include "List.hpp"
 using Key = std::string;
 typedef unsigned long long ull;
 using T = double;
@@ -41,7 +42,7 @@ private:
 	
 	ull base,mod;
 	size_type siz;
-	std::vector< node<T>*  > table;
+	std::vector< List<T>  > table;
 	
 	n_ptr newnode(const mapped_type &V,const ull &H);
 	ull K2U(key_type s);
@@ -51,8 +52,7 @@ private:
 	void expand();
 	void shrink();
 	void rebuild(ull nmod);
-	inline bool overWeight(){ return 0; return mod<=1e7&&siz*4>=3*base; } 
-	inline bool tooThin(){ return 0; return mod>=64&&siz*8<=base; }
-
+	inline bool tooFat(){ return mod>=64&&siz*8<=mod; } 
+	inline bool tooThin(){ return mod<=1e7&&siz*4>=3*mod; }
 }; // TODO
 #endif
